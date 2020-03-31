@@ -3,7 +3,7 @@ import style from "./Contacts.module.css";
 
 const Contacts = ({ contacts, onRemoveContact }) => {
 	return (
-		<ul>
+		<ul className={style.list}>
 			{contacts.map(({ id, name, number, newItem }) => (
 				<li
 					key={id}
@@ -14,6 +14,7 @@ const Contacts = ({ contacts, onRemoveContact }) => {
 						type="button"
 						value="Delete"
 						onClick={() => onRemoveContact(id)}
+						className={style.btn}
 					/>
 				</li>
 			))}

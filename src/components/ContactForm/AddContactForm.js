@@ -1,16 +1,17 @@
 import React, { Component } from "react";
-import { validateAll } from "indicative";
+import { validateAll } from "indicative/validator";
 //----------------------------
 import style from "./AddContactForm.module.css";
+import ErrorNotification from "./../ErrorNotification";
 
 const rules = {
 	name: "required|string",
-	number: "required|email"
+	number: "required|number"
 };
 
 const messages = {
 	"name.required": "Please choose a unique username for your account",
-	"number.required": "Enter a valid email address."
+	"number.required": "Enter a valid phone number."
 };
 
 export default class AddContactForm extends Component {
@@ -24,29 +25,22 @@ export default class AddContactForm extends Component {
 		evt.preventDefault();
 		const { name, number } = this.state;
 
-		this.props.addContact({ name, number });
+		validateAll({ name, number }, rules, messages)
+			.then(data => {
+				this.props.addContact({ name, number });
+				this.reset();
+			})
+			.catch(errors => {
+				const formattedErrors = {};
+				errors.forEach(error => {
+					formattedErrors[error.field] = error.message;
+				});
 
-		// validateAll({ name, number }, rules, messages)
-		// 	.then(data => {
-		// 		console.log("success: ", data);
-		// 	})
-		// 	.catch(errors => {
-		// 		console.log("error: ", errors);
-
-		// 		const formattedErrors = {};
-
-		// 		errors.forEach(error => {
-		// 			formattedErrors[error.field] = error.message;
-		// 		});
-
-		// 		console.log(formattedErrors);
-
-		// 		this.setState({
-		// 			errors: formattedErrors
-		// 		});
-		// 	});
-
-		this.reset();
+				//console.log(formattedErrors);
+				this.setState({
+					errors: formattedErrors
+				});
+			});
 	};
 
 	handleChange = ({ target }) => {
@@ -59,10 +53,10 @@ export default class AddContactForm extends Component {
 	};
 
 	render() {
-		const { name, number } = this.state;
+		const { name, number, errors } = this.state;
 
 		return (
-			<form onSubmit={this.handleSubmit}>
+			<form onSubmit={this.handleSubmit} className={style.form}>
 				<label className={style.title}>
 					Name
 					<input
@@ -73,6 +67,7 @@ export default class AddContactForm extends Component {
 						onChange={this.handleChange}
 						name="name"
 					/>
+					{errors && <ErrorNotification errorType={errors.name} />}
 				</label>
 
 				<label className={style.title}>
@@ -85,9 +80,12 @@ export default class AddContactForm extends Component {
 						onChange={this.handleChange}
 						name="number"
 					/>
+					{errors && <ErrorNotification errorType={errors.number} />}
 				</label>
 
-				<button type="submit">Add contact</button>
+				<button type="submit" className={style.submitBtn}>
+					Add contact
+				</button>
 			</form>
 		);
 	}

@@ -5,7 +5,7 @@ import Section from "./Section";
 import Contacts from "./Contact/Contacts";
 import AddContactForm from "./ContactForm/AddContactForm";
 import ContactFilter from "./ContactFilter";
-import data from "./fakeData";
+import data from "./Data/fakeData.json";
 
 const filterContacts = (contacts, filter) => {
 	return contacts.filter(contact =>
