@@ -20,10 +20,7 @@ export default class App extends Component {
 	};
 
 	changeFilter = (e) => {
-		const contactLength = this.state.contacts.length;
-
-		// Если контактов больше 2ух то поле контактов ренедерится
-		contactLength > 2 && this.setState({ filter: e.target.value });
+		this.setState({ filter: e.target.value });
 	};
 
 	addContact = (contact) => {
@@ -55,6 +52,8 @@ export default class App extends Component {
 
 		const filteredContacts = filterContacts(contacts, filter);
 
+		console.log(filter);
+
 		return (
 			<>
 				<Section title="Phonebook">
@@ -62,10 +61,12 @@ export default class App extends Component {
 				</Section>
 
 				<Section title="Contacts">
-					<ContactFilter
-						value={filter}
-						onChangeFilter={this.changeFilter}
-					/>
+					{(contacts.length > 2 || filter) && (
+						<ContactFilter
+							value={filter}
+							onChangeFilter={this.changeFilter}
+						/>
+					)}
 					<Contacts
 						contacts={filteredContacts}
 						onRemoveContact={this.removeContact}
