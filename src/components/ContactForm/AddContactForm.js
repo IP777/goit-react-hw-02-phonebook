@@ -1,44 +1,47 @@
 import React, { Component } from "react";
-import { validateAll } from "indicative/validator";
+import { validateAll, validations } from "indicative/validator";
 //----------------------------
 import style from "./AddContactForm.module.css";
 import ErrorNotification from "./../ErrorNotification";
 
 const rules = {
-	name: "required|string",
-	number: "required|number"
+	//regex -регулярка на наличие букв a-z, A-Z, а-я, А-Я
+	name: [validations.required(), validations.regex(["^[a-zA-Zа-яА-Я]+"])],
+	number: "required|number",
 };
 
 const messages = {
 	"name.required": "Please choose a unique username for your account",
-	"number.required": "Enter a valid phone number."
+	"number.required": "Enter a valid phone number.",
+	"name.regex":
+		"Username contains invalid characters, please use only Latin or Cyrillic letters",
 };
 
 export default class AddContactForm extends Component {
 	state = {
 		name: "",
 		number: "",
-		errors: null
+		errors: null,
 	};
 
-	handleSubmit = evt => {
+	handleSubmit = (evt) => {
 		evt.preventDefault();
 		const { name, number } = this.state;
 
 		validateAll({ name, number }, rules, messages)
-			.then(data => {
+			.then((data) => {
+				//console.log(data);
 				this.props.addContact({ name, number });
 				this.reset();
 			})
-			.catch(errors => {
+			.catch((errors) => {
 				const formattedErrors = {};
-				errors.forEach(error => {
+				errors.forEach((error) => {
 					formattedErrors[error.field] = error.message;
 				});
 
-				//console.log(formattedErrors);
 				this.setState({
-					errors: formattedErrors
+					errors: formattedErrors,
 				});
 			});
 	};
@@ -49,7 +52,7 @@ export default class AddContactForm extends Component {
 	};
 
 	reset = () => {
-		this.setState({ name: "", number: "" });
+		this.setState({ name: "", number: "", errors: null });
 	};
 
 	render() {
