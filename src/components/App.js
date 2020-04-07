@@ -8,7 +8,7 @@ import ContactFilter from "./ContactFilter";
 import data from "./Data/fakeData.json";
 
 const filterContacts = (contacts, filter) => {
-	return contacts.filter(contact =>
+	return contacts.filter((contact) =>
 		contact.name.toLowerCase().includes(filter.toLowerCase())
 	);
 };
@@ -16,34 +16,37 @@ const filterContacts = (contacts, filter) => {
 export default class App extends Component {
 	state = {
 		contacts: [...data],
-		filter: ""
+		filter: "",
 	};
 
-	changeFilter = e => {
-		this.setState({ filter: e.target.value });
+	changeFilter = (e) => {
+		const contactLength = this.state.contacts.length;
+
+		// Если контактов больше 2ух то поле контактов ренедерится
+		contactLength > 2 && this.setState({ filter: e.target.value });
 	};
 
-	addContact = contact => {
+	addContact = (contact) => {
 		const { name } = contact;
 
-		if (this.state.contacts.find(i => i.name === name)) {
+		if (this.state.contacts.find((i) => i.name === name)) {
 			alert(`${name} is already in contacts`);
 		} else {
 			const contactToAdd = {
 				...contact,
 				id: shortid.generate(),
-				newItem: true
+				newItem: true,
 			};
 
-			this.setState(state => ({
-				contacts: [contactToAdd, ...state.contacts]
+			this.setState((state) => ({
+				contacts: [contactToAdd, ...state.contacts],
 			}));
 		}
 	};
 
-	removeContact = id => {
-		this.setState(state => ({
-			contacts: state.contacts.filter(contact => contact.id !== id)
+	removeContact = (id) => {
+		this.setState((state) => ({
+			contacts: state.contacts.filter((contact) => contact.id !== id),
 		}));
 	};
 

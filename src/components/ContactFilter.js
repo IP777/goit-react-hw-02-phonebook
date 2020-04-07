@@ -1,7 +1,7 @@
 import React from "react";
 
 const style = {
-	width: 313
+	width: 313,
 };
 
 const ContactFilter = ({ value, onChangeFilter }) => (
